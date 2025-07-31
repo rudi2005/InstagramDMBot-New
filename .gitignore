@@ -1,0 +1,6 @@
+instagram_cookies.pkl
+dm_log.csv
+build/
+dist/
+*.spec
+__pycache__/
