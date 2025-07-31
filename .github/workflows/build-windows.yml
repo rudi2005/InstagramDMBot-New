@@ -1,0 +1,44 @@
+name: Build InstagramDMBot for Windows
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          pip install cython
+          pip install requests
+          pip install Pillow
+      - name: Download chromedriver
+        run: |
+          curl -Lo chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_win32.zip
+          unzip chromedriver.zip
+      - name: Cythonize main.py
+        run: |
+          cythonize -i main.py
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --name InstagramDMBot --add-data "icons;icons" --add-data "logo.png;." --add-data "analytics.py;." --add-data "follow_unfollow.py;." --add-data "reply.py;." --add-binary "chromedriver.exe;." main.py
+        shell: cmd
+      - name: Zip the app
+        run: |
+          powershell Compress-Archive -Path dist/InstagramDMBot -DestinationPath InstagramDMBot-windows.zip
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: InstagramDMBot-windows
+          path: InstagramDMBot-windows.zip
