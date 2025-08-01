@@ -39,11 +39,6 @@ jobs:
           copy logo.png dist\InstagramDMBot\
           xcopy icons dist\InstagramDMBot\icons\ /E /I /Y
         shell: cmd
-      - name: Clean up _internal folder
-        run: |
-          del /Q dist\InstagramDMBot\_internal\*.py
-          del /Q dist\InstagramDMBot\_internal\*.pyc
-        shell: cmd
       - name: Zip the app
         run: |
           powershell Compress-Archive -Path dist\InstagramDMBot -DestinationPath InstagramDMBot-windows.zip
