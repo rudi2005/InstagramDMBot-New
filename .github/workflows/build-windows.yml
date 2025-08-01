@@ -39,9 +39,14 @@ jobs:
           copy logo.png dist\InstagramDMBot\
           xcopy icons dist\InstagramDMBot\icons\ /E /I /Y
         shell: cmd
+      - name: Verify dist folder contents
+        run: |
+          dir dist\InstagramDMBot\
+        shell: cmd
       - name: Zip the app
         run: |
-          powershell Compress-Archive -Path dist\InstagramDMBot -DestinationPath InstagramDMBot-windows.zip
+          powershell Compress-Archive -Path dist\InstagramDMBot\* -DestinationPath InstagramDMBot-windows.zip
+        shell: cmd
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
