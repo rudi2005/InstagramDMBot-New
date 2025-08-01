@@ -32,7 +32,7 @@ jobs:
           cythonize -i main.py
       - name: Build with PyInstaller
         run: |
-          pyinstaller --name InstagramDMBot --onefile --add-data "logo.png;." --add-data "icons;icons" --add-binary "chromedriver.exe;." main.py
+          pyinstaller --name InstagramDMBot --add-data "logo.png;." --add-data "analytics.py;." --add-data "follow_unfollow.py;." --add-data "reply.py;." --add-data "icons;icons" --add-binary "chromedriver.exe;." main.py
         shell: cmd
       - name: Copy additional files
         run: |
