@@ -32,16 +32,21 @@ jobs:
           cythonize -i main.py
       - name: Build with PyInstaller
         run: |
-          pyinstaller --name InstagramDMBot --add-data "logo.png;." --add-data "analytics.py;." --add-data "follow_unfollow.py;." --add-data "reply.py;." --add-data "icon;icon" --add-binary "chromedriver.exe;." main.py
+          pyinstaller --name InstagramDMBot --onefile --add-data "logo.png;." --add-data "icons;icons" --add-binary "chromedriver.exe;." main.py
         shell: cmd
       - name: Copy additional files
         run: |
           copy logo.png dist\InstagramDMBot\
-          xcopy icon dist\InstagramDMBot\icon\ /E /I /Y
+          xcopy icons dist\InstagramDMBot\icons\ /E /I /Y
+        shell: cmd
+      - name: Clean up _internal folder
+        run: |
+          del /Q dist\InstagramDMBot\_internal\*.py
+          del /Q dist\InstagramDMBot\_internal\*.pyc
         shell: cmd
       - name: Zip the app
         run: |
-          powershell Compress-Archive -Path dist/InstagramDMBot -DestinationPath InstagramDMBot-windows.zip
+          powershell Compress-Archive -Path dist\InstagramDMBot -DestinationPath InstagramDMBot-windows.zip
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
