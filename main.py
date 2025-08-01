@@ -23,6 +23,15 @@ from analytics import AnalyticsWindow
 
 os.environ["QT_LOGGING_RULES"] = "qt5.warning=false"
 
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 def check_control_file():
     try:
         print("Attempting to fetch control.txt...")
@@ -138,9 +147,8 @@ class BotThread(QThread):
             self.log_signal.emit("Extracting commenters...", "info")
             commenters = driver.execute_script("""
                 let comments = document.querySelectorAll('a._a6hd[href*="/"]');
-                if (comments.length === 0) {
+                if (comments.length === 0):
                     return [];
-                }
                 return Array.from(comments)
                     .filter(c => {
                         const username = c.getAttribute('href').split('/')[1];
@@ -325,8 +333,8 @@ class InstagramBotApp(QMainWindow):
         super().__init__()
         self.setWindowTitle("Instagram DM Bot")
         self.setGeometry(100, 100, 800, 600)
-        self.cookie_file = "E:/DOWNLOADS/InstagramBotPython/instagram_cookies.pkl"
-        self.settings_file = "E:/DOWNLOADS/InstagramBotPython/settings.pkl"
+        self.cookie_file = resource_path("instagram_cookies.pkl")
+        self.settings_file = resource_path("settings.pkl")
         self.bot_thread = None
         self.successful_dms = []
         self.failed_dms = []
@@ -363,7 +371,7 @@ class InstagramBotApp(QMainWindow):
         self.main_layout_inner = QVBoxLayout()
         self.header_layout = QHBoxLayout()
         self.logo_label = QLabel()
-        logo_path = "E:/DOWNLOADS/InstagramBotPython/logo.png"
+        logo_path = resource_path("logo.png")
         if os.path.exists(logo_path):
             self.logo_label.setPixmap(QPixmap(logo_path))
             self.logo_label.setScaledContents(True)
@@ -376,7 +384,7 @@ class InstagramBotApp(QMainWindow):
 
         # Mode Switch Button
         self.mode_button = QPushButton()
-        self.mode_button.setIcon(QIcon("E:/DOWNLOADS/InstagramBotPython/icons/mode_icon.png"))
+        self.mode_button.setIcon(QIcon(resource_path("icons/mode_icon.png")))
         self.mode_button.setFixedSize(35, 35)
         self.mode_button.setStyleSheet(self.get_button_style())
         self.mode_button.clicked.connect(self.toggle_mode)
@@ -420,21 +428,21 @@ class InstagramBotApp(QMainWindow):
         # Buttons
         self.button_layout = QHBoxLayout()
         self.save_button = QPushButton("Save")
-        self.save_button.setIcon(QIcon("E:/DOWNLOADS/InstagramBotPython/icons/save_icon.png"))
+        self.save_button.setIcon(QIcon(resource_path("icons/save_icon.png")))
         self.save_button.setFixedSize(100, 35)
         self.save_button.setStyleSheet(self.get_button_style())
         self.save_button.clicked.connect(self.save_settings)
         self.button_layout.addWidget(self.save_button)
 
         self.start_button = QPushButton("Start")
-        self.start_button.setIcon(QIcon("E:/DOWNLOADS/InstagramBotPython/icons/play_icon.png"))
+        self.start_button.setIcon(QIcon(resource_path("icons/play_icon.png")))
         self.start_button.setFixedSize(100, 35)
         self.start_button.setStyleSheet(self.get_button_style())
         self.start_button.clicked.connect(self.start_bot)
         self.button_layout.addWidget(self.start_button)
 
         self.stop_button = QPushButton("Stop")
-        self.stop_button.setIcon(QIcon("E:/DOWNLOADS/InstagramBotPython/icons/stop_icon.png"))
+        self.stop_button.setIcon(QIcon(resource_path("icons/stop_icon.png")))
         self.stop_button.setFixedSize(100, 35)
         self.stop_button.setStyleSheet(self.get_button_style())
         self.stop_button.clicked.connect(self.stop_bot)
@@ -442,7 +450,7 @@ class InstagramBotApp(QMainWindow):
         self.button_layout.addWidget(self.stop_button)
 
         self.clear_logs_button = QPushButton("Clear")
-        self.clear_logs_button.setIcon(QIcon("E:/DOWNLOADS/InstagramBotPython/icons/clear_icon.png"))
+        self.clear_logs_button.setIcon(QIcon(resource_path("icons/clear_icon.png")))
         self.clear_logs_button.setFixedSize(100, 35)
         self.clear_logs_button.setStyleSheet(self.get_button_style())
         self.clear_logs_button.clicked.connect(self.clear_logs)
@@ -512,7 +520,7 @@ class InstagramBotApp(QMainWindow):
         self.settings_layout.addWidget(self.password_settings_input)
 
         self.save_settings_button = QPushButton("Save")
-        self.save_settings_button.setIcon(QIcon("E:/DOWNLOADS/InstagramBotPython/icons/save_icon.png"))
+        self.save_settings_button.setIcon(QIcon(resource_path("icons/save_icon.png")))
         self.save_settings_button.setFixedSize(100, 35)
         self.save_settings_button.setStyleSheet(self.get_button_style())
         self.save_settings_button.clicked.connect(self.save_settings)
@@ -555,7 +563,7 @@ class InstagramBotApp(QMainWindow):
             item = QListWidgetItem()
             item.setText(text)
             if icon:
-                item.setIcon(QIcon(f"E:/DOWNLOADS/InstagramBotPython/icons/{icon}"))
+                item.setIcon(QIcon(resource_path(f"icons/{icon}")))
             if text == "COMING SOON":
                 item.setData(Qt.UserRole, "coming_soon")
             self.sidebar_content.addItem(item)
