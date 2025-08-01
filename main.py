@@ -25,9 +25,12 @@ os.environ["QT_LOGGING_RULES"] = "qt5.warning=false"
 
 def check_control_file():
     try:
-        response = requests.get('https://raw.githubusercontent.com/rudi2005/InstagramDMBot-New/main/control.txt')
+        print("Attempting to fetch control.txt...")
+        response = requests.get('https://raw.githubusercontent.com/rudi2005/InstagramDMBot-New/main/control.txt', timeout=5)
+        print(f"Response status code: {response.status_code}")
         if response.status_code == 200:
             status = response.text.strip().lower()
+            print(f"Control.txt content: {status}")
             if status == 'inactive':
                 print("Bot is disabled (control.txt is set to 'inactive'). Exiting...")
                 sys.exit(0)
@@ -37,10 +40,10 @@ def check_control_file():
                 print("Invalid control.txt content. Expected 'active' or 'inactive'. Exiting...")
                 sys.exit(1)
         else:
-            print("Failed to fetch control.txt. Exiting...")
+            print(f"Failed to fetch control.txt. Status code: {response.status_code}. Exiting...")
             sys.exit(1)
     except Exception as e:
-        print(f"Error checking control.txt: {e}. Exiting...")
+        print(f"Error checking control.txt: {str(e)}. Exiting...")
         sys.exit(1)
 
 class SidebarDelegate(QStyledItemDelegate):
